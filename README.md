@@ -58,7 +58,7 @@ $ cd runs/
 $ canu -p jb418 -d jb418-auto genomeSize=4.7m -pacbio-raw ../raw_reads/pb.fastq.gz
 ```
 
-This step took about 2.75 hours on my ~3 year old MacBook Pro. For complete run log, [see here](logs/canu_run,log).
+This step took about 2.75 hours on my ~3 year old MacBook Pro. For complete run log, [see here](logs/canu_run.log).
 
 The assembly ends up [here](runs/jb418-auto/jb418.contigs.fasta).
 
@@ -149,4 +149,54 @@ samtools.
 ```sh
 $ samtools sort jb418.bam -o sorted_jb418
 $ samtools index sorted_jb418.bam sorted_jb418.bai
+```
+I then tried to run pilon, but got an error that I don't have enough memory or something.
+
+```sh
+$ pilon --genome ../../runs/jb418-auto/jb418.contigs.fasta --bam sorted_jb418.bam --outdir pilon/
+Pilon version 1.22 Wed Mar 15 16:38:30 2017 -0400
+Genome: ../../runs/jb418-auto/jb418.contigs.fasta
+Fixing snps, indels, gaps, local
+Input genome size: 5959283
+Scanning BAMs
+Exception in thread "main" java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.simontuffs.onejar.Boot.run(Boot.java:340)
+	at com.simontuffs.onejar.Boot.main(Boot.java:166)
+Caused by: java.lang.OutOfMemoryError: GC overhead limit exceeded
+	at htsjdk.samtools.DefaultSAMRecordFactory.createBAMRecord(DefaultSAMRecordFactory.java:36)
+	at htsjdk.samtools.BAMRecordCodec.decode(BAMRecordCodec.java:200)
+	at htsjdk.samtools.BAMFileReader$BAMFileIterator.getNextRecord(BAMFileReader.java:660)
+	at htsjdk.samtools.BAMFileReader$BAMFileIterator.advance(BAMFileReader.java:634)
+	at htsjdk.samtools.BAMFileReader$BAMFileIterator.next(BAMFileReader.java:628)
+	at htsjdk.samtools.BAMFileReader$BAMFileIterator.next(BAMFileReader.java:598)
+	at htsjdk.samtools.SamReader$AssertingIterator.next(SamReader.java:544)
+	at htsjdk.samtools.SamReader$AssertingIterator.next(SamReader.java:518)
+	at scala.collection.convert.Wrappers$JIteratorWrapper.next(Wrappers.scala:43)
+	at scala.collection.Iterator$class.foreach(Iterator.scala:893)
+	at scala.collection.AbstractIterator.foreach(Iterator.scala:1336)
+	at org.broadinstitute.pilon.BamFile.scan(BamFile.scala:285)
+	at org.broadinstitute.pilon.GenomeFile$$anonfun$processRegions$3.apply(GenomeFile.scala:92)
+	at org.broadinstitute.pilon.GenomeFile$$anonfun$processRegions$3.apply(GenomeFile.scala:92)
+	at scala.collection.parallel.AugmentedIterableIterator$class.map2combiner(RemainsIterator.scala:115)
+	at scala.collection.parallel.immutable.ParVector$ParVectorIterator.map2combiner(ParVector.scala:62)
+	at scala.collection.parallel.ParIterableLike$Map.leaf(ParIterableLike.scala:1054)
+	at scala.collection.parallel.Task$$anonfun$tryLeaf$1.apply$mcV$sp(Tasks.scala:49)
+	at scala.collection.parallel.Task$$anonfun$tryLeaf$1.apply(Tasks.scala:48)
+	at scala.collection.parallel.Task$$anonfun$tryLeaf$1.apply(Tasks.scala:48)
+	at scala.collection.parallel.Task$class.tryLeaf(Tasks.scala:51)
+	at scala.collection.parallel.ParIterableLike$Map.tryLeaf(ParIterableLike.scala:1051)
+	at scala.collection.parallel.AdaptiveWorkStealingTasks$WrappedTask$class.compute(Tasks.scala:152)
+	at scala.collection.parallel.AdaptiveWorkStealingForkJoinTasks$WrappedTask.compute(Tasks.scala:443)
+	at scala.concurrent.forkjoin.RecursiveAction.exec(RecursiveAction.java:160)
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260)
+	at scala.concurrent.forkjoin.ForkJoinTask.doJoin(ForkJoinTask.java:341)
+	at scala.concurrent.forkjoin.ForkJoinTask.join(ForkJoinTask.java:673)
+	at scala.collection.parallel.ForkJoinTasks$WrappedTask$class.sync(Tasks.scala:378)
+	at scala.collection.parallel.AdaptiveWorkStealingForkJoinTasks$WrappedTask.sync(Tasks.scala:443)
+	at scala.collection.parallel.ForkJoinTasks$class.executeAndWaitResult(Tasks.scala:426)
+	at scala.collection.parallel.ForkJoinTaskSupport.executeAndWaitResult(TaskSupport.scala:56)
 ```
