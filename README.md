@@ -200,3 +200,5 @@ Caused by: java.lang.OutOfMemoryError: GC overhead limit exceeded
 	at scala.collection.parallel.ForkJoinTasks$class.executeAndWaitResult(Tasks.scala:426)
 	at scala.collection.parallel.ForkJoinTaskSupport.executeAndWaitResult(TaskSupport.scala:56)
 ```
+
+[This is](https://github.com/broadinstitute/pilon/issues/32) the same issue noted in Pilon's issue tracker.
